@@ -1,11 +1,11 @@
 const express=require('express')
-const conn=require('./../../config/db')
+const Connection=require('./../../config/db')
 const router=express.Router();
-
+const mysql=require('mysql')
 router.post('/create',(req,res,next)=>{
     let user=req.body;
-    let qry='insert into users values(?,?,?)';
-    conn.query(qry,[user.first_name,user.last_name,user.city],(err,result)=>{
+    qry='insert into node_users(first_name,last_name,city) values(?,?,?)';
+    Connection.query(qry,[user.first_name,user.last_name,user.city],(err,result)=>{
         if(err){
             res.status(500).json(err)
         }
@@ -16,8 +16,8 @@ router.post('/create',(req,res,next)=>{
 })
 
 router.get('/show',(req,res,next)=>{
-    qry='select * from users';
-    conn.query(qry,(err,result)=>{
+    qry='select * from node_users';
+    Connection.query(qry,(err,result)=>{
         if(err){
             res.status(500).json(err);
         }
@@ -27,11 +27,11 @@ router.get('/show',(req,res,next)=>{
     })
 })
 
-router.patch('/update',(req,res,next)=>{
-    const id=req.params
-    const body=res.body
-    qry='update users set ? where uid=?'
-    conn.query(qry,[body,id],(err,result)=>{
+router.patch('/update/:id',(req,res,next)=>{
+    id=req.params.id
+    user=req.body
+    qry='update node_users set first_name=? ,last_name=?,city=? where uid=?';
+    Connection.query(qry,[user.first_name,user.last_name,user.city,id],(err,result)=>{
         if(err){
             res.status(500).json(err)
         }
@@ -41,10 +41,10 @@ router.patch('/update',(req,res,next)=>{
     })
 })
 
-router.delete('/delete',(req,res,next)=>{
-    const id=req.params;
-    qry='delete from users where uid=?'
-    conn.query(qry,[id],(err,result)=>{
+router.delete('/delete/:id',(req,res,next)=>{
+    id=req.params.id;
+    qry='delete from node_users where uid=?'
+    Connection.query(qry,[id],(err,result)=>{
         if(err){
             res.status(500).json(err)
         }

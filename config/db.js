@@ -15,3 +15,5 @@ conn.connect((err)=>{
         console.log("connected")
     }
 })
+
+module.exports=conn
